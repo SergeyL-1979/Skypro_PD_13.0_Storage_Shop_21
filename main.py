@@ -16,56 +16,24 @@ class Storage(ABC): # Нужно ли сюда делать наследован
     `get_items()` - возвращает содержание склада в словаре {товар: количество}
     `get_unique_items_count()` - возвращает количество уникальных товаров.
     """
-    goods_items = {}
-    storage_quantity = 0
-
-    def __init__(self, qnt):
-        if qnt < self._get_total():
-            self._set_total(self._get_total() - qnt)
-            self.storage_quantity = qnt
-        else:
-            self.storage_quantity = self._get_total()
-            self._set_total(0)
-
-    @classmethod
-    def _get_total(cls):
-        return cls.storage_quantity
-
-    @classmethod
-    def _set_total(cls, qnt):
-        cls.storage_quantity = qnt
-
-    # @abstractmethod
+    @abstractmethod
     def add(self, name, qnt):
-        if qnt < self._get_total():
-            self._set_total(self._get_total() - qnt)
-            self.storage_quantity += qnt
-        else:
-            self.storage_quantity = self._get_total()
-            self._set_total(0)
+        pass
 
-    # @abstractmethod
+    @abstractmethod
     def remove(self, name, qnt):
-        if qnt < self.storage_quantity:
-            self.storage_quantity = (self.storage_quantity - qnt)
-            self._set_total(self._get_total() + qnt)
-        else:
-            self._set_total(self._get_total() + self.storage_quantity)
-            self.storage_quantity = 0
+        pass
 
-    # @abstractmethod
-    def get_unique_items_count(self):
-        self.storage_quantity = self.storage_quantity + self._get_total()
-        self._set_total(0)
-
-
-    # @abstractmethod
+    @abstractmethod
     def get_free_space(self):
-        free_space = Store.storage_quantity < self.storage_quantity
-        return free_space
+        pass
 
-    # @abstractmethod
+    @abstractmethod
     def get_items(self):
+        pass
+
+    @abstractmethod
+    def get_unique_items_count(self):
         pass
 
 
@@ -84,13 +52,28 @@ class Store(Storage):
     `get_items()` - возвращает содержание склада в словаре {товар: количество}
     `get_unique_items_count()` - возвращает количество уникальных товаров.
     """
-    def __init__(self, name, qnt):
-        super().__init__(qnt)
-        self.items = {}
-        self.name = name
-        self.storage_quantity = 100
+    # goods_items = {}  # ИЛИ ТУТ ПРАВИЛЬНО ДЕЛАТ ПОЛЕ
+    storage_quantity = 10
+
+    def __init__(self):
+        self.goods_items = {}
+
+
+    @classmethod
+    def _get_total(cls):
+        return cls.storage_quantity
+
+    @classmethod
+    def _set_total(cls, qnt):
+        cls.storage_quantity = qnt
 
     def add(self, name, qnt):
+        if qnt < self._get_total():
+            self._set_total(self._get_total() - qnt)
+            self.storage_quantity = qnt
+        else:
+            self.storage_quantity = self._get_total()
+            self._set_total(0)
         is_found = False
         if self.get_free_space() > qnt:
             for key in self.goods_items.keys():
@@ -114,7 +97,7 @@ class Store(Storage):
                 print(f"{name.title()} - нет на складе")
 
     def get_free_space(self):  # - вернуть количество свободных мест
-        pass
+        return self.storage_quantity
 
     def get_items(self):  # - возвращает содержание склада в словаре {товар: количество}
         pass
@@ -137,8 +120,8 @@ class Shop(Store):
     `get_items()` - возвращает содержание склада в словаре {товар: количество}
     `get_unique_items_count()` - возвращает количество уникальных товаров.
     """
-    items = {}
-    capacity = 20
+    goods_items = {}  # ИЛИ ТУТ ПРАВИЛЬНО ДЕЛАТ ПОЛЕ
+    storage_quantity = 20
 
     def add(self, name, qnt):  # - увеличивает запас items с учетом лимита capacity
         pass
@@ -192,16 +175,16 @@ if __name__ == '__main__':
     - выполните перемещение если это возможно
     - выполните перемещение
     """
-    print("Всего на складе: ", Storage.storage_quantity)
-    storage = Storage(6)
-    five = storage.add('s', 5)
-    print(five)
+    print("Всего на складе: ", Store.storage_quantity)
+    storage = Store()
+    # five = storage.add('s', 5)
+    # print(five)
     print("Число отгруженных товаров возросло до:", storage.storage_quantity)
-    print("Остаток на складе: ", Storage.storage_quantity)
+    print("Остаток на складе: ", Store.storage_quantity)
     storage.remove('s', 4)
     print("Число отгруженных товаров сократилось до:", storage.storage_quantity)
-    print("Остаток на складе: ", Storage.storage_quantity)
+    print("Остаток на складе: ", Store.storage_quantity)
     storage.add('ss', 8)
     print(storage.storage_quantity)
     print("Число отгруженных товаров сократилось до:", storage.storage_quantity)
-    print("Остаток на складе: w", Storage.storage_quantity, Storage.goods_items)
+    print("Остаток на складе: w", Store.storage_quantity)
