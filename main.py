@@ -120,7 +120,8 @@ class Shop(Store):
     `get_items()` - возвращает содержание склада в словаре {товар: количество}
     `get_unique_items_count()` - возвращает количество уникальных товаров.
     """
-    goods_items = {}  # ИЛИ ТУТ ПРАВИЛЬНО ДЕЛАТ ПОЛЕ
+    items_count = 5
+    # goods_items = {}  # ИЛИ ТУТ ПРАВИЛЬНО ДЕЛАТ ПОЛЕ
     storage_quantity = 20
 
     def add(self, name, qnt):  # - увеличивает запас items с учетом лимита capacity
@@ -130,16 +131,16 @@ class Shop(Store):
         pass
 
     def get_free_space(self):  # - вернуть количество свободных мест
-        pass
+        return self.items_count
 
     def get_items(self):  # - возвращает содержание склада в словаре {товар: количество}
         pass
 
     def get_unique_items_count(self):  # - возвращает количество уникальных товаров
-        pass
+        return len(self.goods_items)
 
 
-class Request(Store):
+class Request:
     """
     Создайте класс Request в котором будет храниться запрос
     **Поля:**
@@ -157,17 +158,22 @@ class Request(Store):
     amount = 3,
     product = "печеньки"
     """
-    # from - откуда везем(строка)
-    # to - куда везем(строка)
-    # amount = 3,
-    # product = "печеньки"(строка)
+    def __init__(self, _from, _to, amount, product):
+        self._from = _from
+        self._to = _to
+        self.amount = amount
+        self.product = product
 
-    # return f"Доставить {amount} {product} из {from} в {to}"
-    pass
+    def get_request(self):
+        return {
+            'from': self._from,
+            'to': self._to,
+            'amount': self.amount,
+            'product': self.product
+        }
 
 
 if __name__ == '__main__':
-    pass
     """
     Напишите функцию main, в которой
     - введите приглашение
