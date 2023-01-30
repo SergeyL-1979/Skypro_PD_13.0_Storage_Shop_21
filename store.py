@@ -25,9 +25,6 @@ class Store(Storage):
     def __init__(self):
         self.goods_items = dict()
         self.storage_quantity = 100
-    # def __init__(self, items: dict, capacity=100):
-    #     self.__items = items
-    #     self.__capacity = capacity
 
     def get_free_space(self):  # - вернуть количество свободных мест
         return self.storage_quantity - sum(self.goods_items.values())
@@ -84,7 +81,7 @@ class Shop(Store):
     def get_items(self):  # - возвращает содержание склада в словаре {товар: количество}
         return self.items
 
-    def get_unique_items_count(self):  # - возвращает количество уникальных товаров
+    def get_unique_items_count(self):  # - возвращает количество уникальных товаровS
         return len(self.items)
 
 

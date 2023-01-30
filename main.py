@@ -52,59 +52,35 @@ class Store(Storage):
     `get_items()` - возвращает содержание склада в словаре {товар: количество}
     `get_unique_items_count()` - возвращает количество уникальных товаров.
     """
-    # goods_items = {}  # ИЛИ ТУТ ПРАВИЛЬНО ДЕЛАТ ПОЛЕ
-    storage_quantity = 10
-
     def __init__(self):
-        self.goods_items = {}
-
-
-    @classmethod
-    def _get_total(cls):
-        return cls.storage_quantity
-
-    @classmethod
-    def _set_total(cls, qnt):
-        cls.storage_quantity = qnt
-
-    def add(self, name, qnt):
-        if qnt < self._get_total():
-            self._set_total(self._get_total() - qnt)
-            self.storage_quantity = qnt
-        else:
-            self.storage_quantity = self._get_total()
-            self._set_total(0)
-        is_found = False
-        if self.get_free_space() > qnt:
-            for key in self.goods_items.keys():
-                if name == key:
-                    self.goods_items[key] = self.goods_items[key] + qnt
-                    is_found = True
-            if not is_found:
-                self.goods_items[name] = qnt
-            print("Товар добавлен")
-        else:
-            print(f"Товар не может быть добавлен, так как есть место только на {self.get_free_space()} товаров")
-
-    def remove(self, name, count):
-        for key in self.goods_items.keys():
-            if name == key:
-                if self.goods_items[key] - count >= 0:
-                    self.goods_items[key] = self.goods_items[key] - count
-                else:
-                    print(f"Слишком мало {name}")
-            else:
-                print(f"{name.title()} - нет на складе")
+        self.goods_items = dict()
+        self.storage_quantity = 10
 
     def get_free_space(self):  # - вернуть количество свободных мест
-        return self.storage_quantity
+        return self.storage_quantity - sum(self.goods_items.values())
+
+    def add(self, name, qnt):
+        if self.get_free_space() >= qnt:
+            if name not in self.goods_items.keys():
+                self.goods_items[name] = qnt
+                print(f"Добавлено {qnt} {name.title()}")
+
+            print("Склад переполнен!!!")
+
+    def remove(self, name, qnt):
+        if name not in self.goods_items:
+            print(f"{name.title()} - нет на складе")
+        elif self.goods_items[name] - qnt < 0:
+            print(f"Слишком мало {name}")
+        else:
+            self.goods_items[name] = self.goods_items[name] - qnt
+            print(f"Добавлено курьеру: {qnt} {name.title()}")
 
     def get_items(self):  # - возвращает содержание склада в словаре {товар: количество}
-        pass
+        return self.goods_items
 
     def get_unique_items_count(self):  # - возвращает количество уникальных товаров
-        pass
-
+        return len(self.goods_items)
 
 class Shop(Store):
     """
@@ -120,8 +96,7 @@ class Shop(Store):
     `get_items()` - возвращает содержание склада в словаре {товар: количество}
     `get_unique_items_count()` - возвращает количество уникальных товаров.
     """
-    items_count = 5
-    # goods_items = {}  # ИЛИ ТУТ ПРАВИЛЬНО ДЕЛАТ ПОЛЕ
+    items_count = 5 #
     storage_quantity = 20
 
     def add(self, name, qnt):  # - увеличивает запас items с учетом лимита capacity
@@ -131,10 +106,10 @@ class Shop(Store):
         pass
 
     def get_free_space(self):  # - вернуть количество свободных мест
-        return self.items_count
+        return self.storage_quantity - sum(self.goods_items.values())
 
     def get_items(self):  # - возвращает содержание склада в словаре {товар: количество}
-        pass
+        return self.goods_items
 
     def get_unique_items_count(self):  # - возвращает количество уникальных товаров
         return len(self.goods_items)
