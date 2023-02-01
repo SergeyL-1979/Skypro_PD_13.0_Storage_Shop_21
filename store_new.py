@@ -56,105 +56,95 @@ class Store(Storage):
 class Shop(Store):
     def __init__(self, goods_items, storage_quantity=20):
         super().__init__(goods_items, storage_quantity)
-    def add(self, name, qnt):  # - увеличивает запас items с учетом лимита capacity
-        if self.get_unique_items_count() <= 5:
-            if self.get_free_space() >= qnt:
-                if name not in self.__goods_items.keys():
-                    self.items[name] = qnt
-                    print(f"Добавлено {qnt} {name.title()}")
-                if name in self.__goods_items.keys():
-                    super().__goods_items[name] = qnt
-            else:
-                print("Магазин переполнен!!!")
+    # def add(self, name, qnt):  # - увеличивает запас items с учетом лимита capacity
+    #     if self.get_unique_items_count() <= 5:
+    #         if self.get_free_space() >= qnt:
+    #             if name not in self.__goods_items.keys():
+    #                 self.items[name] = qnt
+    #                 print(f"Добавлено {qnt} {name.title()}")
+    #             if name in self.__goods_items.keys():
+    #                 super().__goods_items[name] = qnt
+    #         else:
+    #             print("Магазин переполнен!!!")
 
-    def remove(self, name, qnt):  # - уменьшает запас items, но не ниже 0
-        if name not in self.__goods_items:
-            print(f"{name.title()} - нет в магазине")
-        elif (self.__goods_items[name] - qnt) < 0:
-            print(f"Слишком мало {name}")
-        else:
-            self.__goods_items[name] = self.__goods_items[name] - qnt
-            print(f"Добавлено курьеру: {qnt} {name.title()}")
+    # def remove(self, name, qnt):  # - уменьшает запас items, но не ниже 0
+    #     if name not in self.__goods_items:
+    #         print(f"{name.title()} - нет в магазине")
+    #     elif (self.__goods_items[name] - qnt) < 0:
+    #         print(f"Слишком мало {name}")
+    #     else:
+    #         self.__goods_items[name] = self.__goods_items[name] - qnt
+    #         print(f"Добавлено курьеру: {qnt} {name.title()}")
 
-    # def get_free_space(self):  # - вернуть количество свободных мест
-    #     return self.capacity - sum(self.items.values())
-    #
-    # def get_items(self):  # - возвращает содержание склада в словаре {товар: количество}
-    #     return self.items
-    #
-    # def get_unique_items_count(self):  # - возвращает количество уникальных товаровS
-    #     return len(self.items)
 
 class Request:
-    def __init__(self, _from, _to, amounts, products):
-        self._from = _from
-        self._to = _to
-        self.amounts = amounts
-        self.products = products
-
-    def get_request(self):
-        return {
-            'from': self._from,
-            'to': self._to,
-            'amount': self.amounts,
-            'product': self.products
-        }
-
-# class Request:
-#     def __init__(self, input_request: str):
-#         self.input_request: list[str] = input_request.split(' ') # Доставить 3 печенька со склад в магазин
-#         self.source: Storage  = storages[self.input_request[4]] # Здесь будет класс shop или store
-#         self.destination: Storage = storages[self.input_request[6]] # Здесь будет класс shop или store
-#         self.position: str = self.input_request[6] # То, что хотим поставить
-#         self.quantity: int = int(self.input_request[1]) # Количество того, что хотим доставить
+    def __init__(self, input_requests):
+        # self.input_requests = input_requests
+        self.source: Store  = storages[input_requests[4]] # Здесь будет класс shop или store
+        self.destination: Shop = storages[input_requests[6]] # Здесь будет класс shop или store
+        self.input_from = input_requests[4]
+        self.input_to = input_requests[6]
+        self.input_amounts = int(input_requests[1])
+        self.input_products = input_requests[2]
+        # order = Request(_from=_from, _to=_to, amounts=amounts, products=products)
 
 
 if __name__ == '__main__':
 
     warehouse = {"коробка": 5, "лента": 5, "скотч": 5, "бумага": 3, "пленка": 5}
-    store = Store(warehouse)
+    # store = Store(warehouse)
 
-    shopping = {"печенье": 1, "конфеты": 1, "халва": 1, "шоколад": 1, "мороженное": 1}
-    shop = Shop(shopping)
+    shopping = {"печенье": 1, "конфеты": 3, "халва": 1, "шоколад": 1, "мороженное": 1}
+    # shop = Shop(shopping)
 
-    # storages = {
-    #     'склад': Store(warehouse),
-    #     'магазин': Shop(shopping)
-    # }
+    storages = {
+        'склад': Store(warehouse),
+        'магазин': Shop(shopping)
+    }
     print("\n", "*" * 20, "СКЛАД", "*" * 20)
-    print(f'На складе хранится: {store.get_items()}')
-    print(f"Количество групп товара склад: {store.get_unique_items_count()}")
-    print(f"Свободно всего мест в складе: {store.get_free_space()}")
+    # print(f'На складе хранится: {store.get_items()}')
+    # print(f"Количество групп товара склад: {store.get_unique_items_count()}")
+    # print(f"Свободно всего мест в складе: {store.get_free_space()}")
 
     print("\n", "*" * 20, "МАГАЗИН", "*" * 20)
-    print(f"В магазине хранится: {shop.get_items()}")
-    print(f"Количество групп товара в магазине: {shop.get_unique_items_count()}")
-    print(f"Свободное место в магазине: {shop.get_free_space()}")
+    # print(f"В магазине хранится: {shop.get_items()}")
+    # print(f"Количество групп товара в магазине: {shop.get_unique_items_count()}")
+    # print(f"Свободное место в магазине: {shop.get_free_space()}")
 
     print("\n", "=" * 20, "Делаем ЗАКАЗ", "=" * 20)
+    user_input = 'Доставить 2 коробка из склад в магазин'
+    # user_input = 'Доставить 3 конфеты из склад в магазин'
+    # user_input = 'Доставить 3 коробка из магазин в склад'
+    # user_input = 'Доставить 7 конфеты из магазин в склад'
+    user_in = user_input.split()
+    request = Request(user_in)
+    request.source.remove(request.input_products, request.input_amounts)
+    request.destination.add(request.input_products, request.input_amounts)
+    # print(f"Доставить {request.input_amounts} {request.input_products} из {request.input_from} в {request.input_to}")
+
 
     # ==============================================================
-    question = input(f"Доставить 3 печеньки из склада в магазин ").lower()
-    quest = question.split()
-    if len(quest) != 7:
-        print('Запрос не корректен')
-    else:
-        _from = quest[4]
-        _to = quest[6]
-        amounts = int(quest[1])
-        products = quest[2]
-        order = Request(_from=_from, _to=_to, amounts=amounts, products=products)
+    # question = input(f"Доставить 3 печеньки из склада в магазин ").lower()
+    # quest = question.split()
+    # if len(quest) != 7:
+    #     print('Запрос не корректен')
+    # else:
+    #     _from = quest[4]
+    #     _to = quest[6]
+    #     amounts = int(quest[1])
+    #     products = quest[2]
+    #     order = Request(_from=_from, _to=_to, amounts=amounts, products=products)
     #
     #
     # # req = Request(_from=, _to=, amount=am, product=)
     # print(f"Доставить {order.amounts} {order.products} из {order._from} в {order._to}")
 
 
-    if order._from == 'магазин':
-        value = shop.get_items()
-        print(f'В магазине имеется {shop.get_items()}')
-        shop.remove(order.products, value)
-        print(f'Курьер забирает из магазина {value} {order.products}')
+    # if order._from == 'магазин':
+    #     value = shop.get_items()
+    #     print(f'В магазине имеется {shop.get_items()}')
+    #     shop.remove(order.products, value)
+    #     print(f'Курьер забирает из магазина {value} {order.products}')
 
 
 
