@@ -111,15 +111,20 @@ if __name__ == '__main__':
     # print(f"Количество групп товара в магазине: {shop.get_unique_items_count()}")
     # print(f"Свободное место в магазине: {shop.get_free_space()}")
 
-    print("\n", "=" * 20, "Делаем ЗАКАЗ", "=" * 20)
-    user_input = 'Доставить 2 коробка из склад в магазин'
-    # user_input = 'Доставить 3 конфеты из склад в магазин'
-    # user_input = 'Доставить 3 коробка из магазин в склад'
-    # user_input = 'Доставить 7 конфеты из магазин в склад'
-    user_in = user_input.split()
-    request = Request(user_in)
-    request.source.remove(request.input_products, request.input_amounts)
-    request.destination.add(request.input_products, request.input_amounts)
+    while True:
+        user_input = input('Пример ввода заказа: << Доставить 2 коробка из склад в магазин >> \n').lower()
+        if user_input == 'stop' or user_input == 'стоп':
+            break
+        else:
+            print("\n", "=" * 20, "Делаем ЗАКАЗ", "=" * 20)
+            # user_input = 'Доставить 2 коробка из склад в магазин'
+            # user_input = 'Доставить 3 конфеты из склад в магазин'
+            # user_input = 'Доставить 3 коробка из магазин в склад'
+            # user_input = 'Доставить 7 конфеты из магазин в склад'
+            user_in = user_input.split()
+            request = Request(user_in)
+            request.source.remove(request.input_products, request.input_amounts)
+            request.destination.add(request.input_products, request.input_amounts)
     # print(f"Доставить {request.input_amounts} {request.input_products} из {request.input_from} в {request.input_to}")
 
 
